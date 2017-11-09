@@ -11,6 +11,10 @@
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{booktabs}
+\usepackage[page,title]{appendix}
+%\renewcommand\appendixname{haha}
+\usepackage{enumerate}
+\usepackage{changepage}
 \usepackage{datetime}
 \newdate{date}{9}{1}{2017}
 
@@ -18,8 +22,11 @@
 \DeclareMathOperator{\mytr}{tr}
 \DeclareMathOperator{\mydiag}{diag}
 \DeclareMathOperator{\myrank}{Rank}
+\DeclareMathOperator{\myP}{P}
 \DeclareMathOperator{\myE}{E}
 \DeclareMathOperator{\myVar}{Var}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
 
 
 \newcommand{\Ba}{\mathbf{a}}    \newcommand{\Bb}{\mathbf{b}}    \newcommand{\Bc}{\mathbf{c}}    \newcommand{\Bd}{\mathbf{d}}    \newcommand{\Be}{\mathbf{e}}    \newcommand{\Bf}{\mathbf{f}}    \newcommand{\Bg}{\mathbf{g}}    \newcommand{\Bh}{\mathbf{h}}    \newcommand{\Bi}{\mathbf{i}}    \newcommand{\Bj}{\mathbf{j}}    \newcommand{\Bk}{\mathbf{k}}    \newcommand{\Bl}{\mathbf{l}}
@@ -73,6 +80,10 @@
 $\alpha
 \boldsymbol{\alpha}
 $
+\begin{appendices}
+    \section{haha1}
+    \section{haha2}
+\end{appendices}
 \section*{Acknowledgements}
 This work was supported by the National Natural Science Foundation of China under Grant No.\ xxxxx, xxxx.
 
