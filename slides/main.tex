@@ -1,0 +1,818 @@
+\documentclass{beamer}
+
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{datetime}
+\usepackage{IEEEtrantools}
+\usepackage{multirow}
+\newdate{date}{20}{10}{2018}
+\newdateformat{mydateformat}{\monthname[\THEMONTH]\, \ordinaldate{\THEDAY}\,\THEYEAR}
+
+\bibliographystyle{apalike}
+
+
+\DeclareMathOperator{\mytr}{tr}
+\DeclareMathOperator{\mydiag}{diag}
+\DeclareMathOperator{\myrank}{Rank}
+\DeclareMathOperator{\myE}{E}
+\DeclareMathOperator{\myVar}{Var}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newcommand{\bZ}{\mathbf{Z}}
+\newcommand{\bX}{\mathbf{X}}
+\newcommand{\ud}{\mathbf{d}}
+
+
+\theoremstyle{plain}
+\newtheorem{proposition}{\quad\quad Proposition}
+\newtheorem{assumption}{\quad\quad Assumption}
+\newtheorem{condition}{Condition}
+
+\theoremstyle{definition}
+\newtheorem{remark}{\quad\quad Remark}
+\theoremstyle{remark}
+
+\usetheme[titleformat=smallcaps]{metropolis}
+\title{Least favorable direction test for multivariate analysis of variance in high dimension}
+\date{\mydateformat{\displaydate{date}}}
+\author{Rui Wang\inst{1} \and Xingzhong Xu\inst{2}}
+\institute[Beijing Institute of Technology]{%\inst{1}
+    %wangruiphd@bit.edu.cn
+    %\inst{2}
+    %xuxz@bit.edu.cn\\
+    School of Mathematics and Statistics\\ Beijing Institute of Technology\\
+}
+\begin{document}
+\maketitle
+\section{Problem statement}
+\begin{frame}{Problem statement}
+    \textbf{Data:}
+    \begin{itemize}
+        \item 
+            Sample $1$: $X_{11},\ldots, X_{1n_1}\overset{i.i.d.}{\sim}N_p(\mu_1,\Sigma)$
+        \item
+            $\ldots$
+        \item
+            Sample $k$: $X_{K1},\ldots, X_{Kn_K}\overset{i.i.d.}{\sim}N_p(\mu_k,\Sigma)$
+    \end{itemize}
+    \textbf{Problem:}
+
+    Testing the hypothesis
+    \begin{equation*}
+            H: \mu_1=\mu_2=\cdots=\mu_k\quad \text{v.s.}\quad K: \text{$\mu_i\neq \mu_j$ for some $i\neq j$}.
+    \end{equation*}
+    The problem is known as one-way multivariate analysis of variance (MANOVA).
+\end{frame}
+%\begin{frame}{Notations}
+    %$n=\sum_{i=1}^k n_i$,
+    %\quad $\bar{\bX}_i=n_i^{-1}\sum_{j=1}^{n_i}X_{ij}$,
+    %\quad $\bar{\bX}=n^{-1}\sum_{i=1}^k\sum_{j=1}^{n_i}X_{ij}$\\
+    %$\bZ=(X_{11},\ldots,X_{1n_1},\ldots,X_{k1},\ldots,X_{kn_k})$\\
+    %%$$
+    %J=\begin{pmatrix}
+        %\frac{1}{\sqrt{n}_1}\mathbf{1}_{n_1}& \mathbf{0}&\mathbf{0}\\
+        %\mathbf{0}&\frac{1}{\sqrt{n}_2}\mathbf{1}_{n_2}& \mathbf{0}\\
+        %\vdots &\vdots &\vdots\\
+        %\mathbf{0}&\mathbf{0} &\frac{1}{\sqrt{n}_k}\mathbf{1}_{n_k}\\
+    %\end{pmatrix}
+    %$$
+    %$\tilde{J}$: $n\times (n-k)$, satisfying $\tilde{J}\tilde{J}^T=I-JJ^T$.\\
+    %$C$: $k\times (k-1)$ column orthogonal, satisfying $CC^T=I_k-n^{-1}J^T \mathbf{1}_n \mathbf{1}_n^T J$.\\
+    %\vspace{0.4cm}
+    %%Then $\myE \bZ= \Xi J^T$,
+    %$$H: \Xi C=O_{p\times(k-1)}$$
+    %\begin{IEEEeqnarray*}{rlr}
+        %G&=\sum_{i=1}^{k}\sum_{j=1}^{n_i}(X_{ij}-\bar{\bX}_i)(X_{ij}-\bar{\bX}_i)^T=\bZ \tilde{J}\tilde{J}^T \bZ^T &\text{sum of squares within groups}\\
+        %F&=\sum_{i=1}^{k} n_i (\bar{\bX}_i-\bar{\bX})(\bar{\bX}_i-\bar{\bX})^T
+        %=\bZ JCC^T J^T \bZ^T &\text{sum of squares between groups}
+    %\end{IEEEeqnarray*}
+
+%\end{frame}
+\begin{frame}{Classical tests}
+
+   $$ 
+    \text{$n=\sum_{i=1}^k n_i$,
+    \quad $\bar{\bX}_i=n_i^{-1}\sum_{j=1}^{n_i}X_{ij}$,
+    \quad $\bar{\bX}=n^{-1}\sum_{i=1}^k\sum_{j=1}^{n_i}X_{ij}$}
+    $$
+    \begin{IEEEeqnarray*}{rll}
+        G&=\sum_{i=1}^{k}\sum_{j=1}^{n_i}(X_{ij}-\bar{\bX}_i)(X_{ij}-\bar{\bX}_i)^T \quad & \text{sum-of-squares within groups}\\
+        F&=\sum_{i=1}^{k} n_i (\bar{\bX}_i-\bar{\bX})(\bar{\bX}_i-\bar{\bX})^T
+         &\text{sum-of-squares between groups}
+    \end{IEEEeqnarray*}
+    %\begin{itemize}
+        %\item
+            %Wilks' Lambda \textbf{(LRT)}:\quad $|G+F|/|G|$
+        %\item
+            %Pillai trace:\quad $\mytr [ F (G+F)^{-1}]$
+        %\item
+            %Hotelling-Lawley trace:\quad $\mytr[ FG^{-1}]$ 
+        %\item
+            %Roy's maximum root:\quad $\lambda_{\max}(FG^{-1})$
+    %\end{itemize}
+    \begin{center}
+        \begin{tabular}{|cc|}
+            \hline
+            Wilks' Lambda: & $|G+F|/|G|$\\
+            Pillai trace: & $\mytr[F(G+F)^{-1}]$\\
+            Hotelling-Lawley trace: & $\mytr[FG^{-1}]$\\
+            Roy's maximum root: & $\lambda_{\max}(FG^{-1})$\\
+            \hline
+        \end{tabular}
+    \end{center}
+    \pause
+    \begin{itemize}
+        \item
+    Theses tests are not defined when \textcolor{red}{$p\geq n$}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{High dimensional tests}
+
+    \begin{itemize}
+        \item~\cite{Schott2007Some} modified Hotelling-Lawley trace and proposed a sum-of-squares type test
+            $$
+            T_{SC}=\frac{1}{\sqrt{n-1}}\big(\frac{1}{K-1}\mytr(F)-\frac{1}{n-K}\mytr(G)\big).
+            $$
+        \item~\cite{Cai2014High} proposed an extreme value type test
+            $$
+            T_{CX}=\max_{1\leq i\leq p}\sum_{1\leq j<l\leq k}\frac{n_j n_l}{n_j+n_l}\frac{(\Omega(\bar{\bX}_j-\bar{\bX}_l))^2_i}{\omega_{ii}},
+            $$
+            where $\Omega=(\omega)_{ij}=\Sigma^{-1}$ is the precision matirx.
+    \end{itemize}
+
+\end{frame}
+
+
+%\begin{frame}{Notations}
+    %\begin{columns}
+        %\column{.5\textwidth}
+        %123
+        %\column{.5\textwidth}
+        %123
+    %\end{columns}
+%\end{frame}
+
+\section{Roy's union intersection principle}
+\begin{frame}{Roy's union intersection principle}
+    Proposed by~\cite{Roy1953}.
+    \begin{enumerate}
+        \item
+            Decompose the hypothesis $H$ and $K$ into component hypotheses
+$$
+            H=\bigcap_{\gamma\in\Gamma} H_\gamma \quad \text{v.s.} \quad K=\bigcup_{\gamma\in \Gamma} K_\gamma,
+$$
+where $\Gamma$ is an index set.
+        \item
+            For each $\gamma$, construct a \textbf{component test} $T_{\gamma}$ for $H_\gamma$ against $K_\gamma$.
+        \item
+            Accept $H$ if \textbf{all} component tests accept the null hypotheses. Or equivalently, reject $H$ if \textbf{any} component test reject the null hypothesis. 
+    \end{enumerate}
+
+    The decomposition in step $1$ is often induced by data transformation.
+\end{frame}
+\begin{frame}{Roy's Maximum root}
+    $$\bZ=(X_{11},\ldots,X_{1n_1},\ldots,X_{k1},\ldots,X_{kn_k})$$
+    $$
+    J=\begin{pmatrix}
+        \frac{1}{\sqrt{n_1}}\mathbf{1}_{n_1}& \mathbf{0}& \mathbf{0}\\
+        \mathbf{0}& \frac{1}{\sqrt{n_2}}\mathbf{1}_{n_2}& \mathbf{0}\\
+        \vdots&
+        \vdots&
+        \vdots\\
+        \mathbf{0}&
+        \mathbf{0}&\frac{1}{\sqrt{n_k}}\mathbf{1}_{n_k}
+    \end{pmatrix}
+    $$
+
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \text{matrix}
+            &$I_n-JJ^T$ &
+            $JJ^T -\frac{1}{n}\mathbf{1}_n\mathbf{1}_n^T$ &
+            $\frac{1}{n}\mathbf{1}_n\mathbf{1}_n^T$\\
+            \hline
+            \text{rank}& $n-k$ & $k-1$ & $1$\\
+            \hline
+        \end{tabular}
+    \end{center}
+    %$I_n-JJ^T$, $JJ^T -\frac{1}{n}\mathbf{1}_n\mathbf{1}_n^T$ and $\frac{1}{n}\mathbf{1}_n\mathbf{1}_n^T$ are three $n\times n$ projection matrices which are pairwise orthogonal with rank $n-k$, $k-1$ and $1$ respectively.
+    $$
+    \text{$C$: $k\times(k-1)$ orthogonal matrix s.t.\ $CC^T = I_k -\frac{1}{n}J^T \mathbf{1}_n \mathbf{1}_n^T J$}
+    $$
+        \begin{align*}
+            G=Z(I_n -JJ^T )Z^T,
+            \quad\quad
+            F=ZJCC^T J^T Z^T
+        \end{align*}
+
+
+\end{frame}
+\begin{frame}{Roy's maximum root}
+Define $
+    \Xi{=}(\sqrt{n_1}\mu_1,\ldots,\sqrt{n_k}\mu_k)
+    $, then $H: \Xi C= O_{p\times (k-1)}$.
+    \begin{itemize}
+        \item
+    Roy's maximum root is derived in~\cite{Roy1953} as an example of his union intersection principle.
+        \item
+            $$\bZ \Longleftrightarrow \big\{a^T \bZ \,|\, a\in \mathbb{R}^p, a^T a=1\big\}.$$
+        \item
+            Use $a^T \bZ$ to test
+            $$
+            \begin{aligned}
+                H_a: a^T \Xi C=O_{1\times (k-1)}\quad \text{v.s.}\quad
+                K_a: a^T \Xi C\neq O_{1\times (k-1)}.
+            \end{aligned}
+            $$
+        \item
+$$
+            H=\bigcap_{a^T a=1} H_a \quad \text{v.s.} \quad K=\bigcup_{a^T a=1} K_a,
+$$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Roy's maximum root}
+
+    \begin{itemize}
+        \item
+    Based on $a^T \bZ$, the LRT for $H_a$ against $K_a$ is
+    $$
+    \text{LRT}_a=\frac{\sup\limits_{\mu_1,\ldots,\mu_k,\Sigma} f_a(a^T \bZ ;\mu_1,\ldots,\mu_k,\Sigma)}{\sup\limits_{\mu,\Sigma} f_a(a^T \bZ ;\mu,\ldots,\mu,\Sigma)}=\Big(1+\frac{a^T F a}{a^T G a}\Big)^{n/2}
+    $$
+        \item
+    By union intersection principle, if any $H_a$ is rejected, $H$ is rejected.
+        \item
+            Equivalently, if $\max_{a} \text{LRT}_a$ is large enough, $H$ is rejected.
+    $$
+    \max\limits_{a^T a=1}\text{LRT}_a=(1+\lambda_{\max}(FG^{-1}))^{n/2}.
+    $$
+    \end{itemize} 
+\end{frame}
+\begin{frame}{Hotelling-Lawley trace}
+    Hotelling-Lawley trace can also be derived by union intersection principle (\cite{Mudholkar1974}).
+    \begin{itemize}
+        \item
+            $$\bZ \Longleftrightarrow \big\{M \bZ \,|\, M \text{ is $(k-1)\times p$ matrix}\big\}.$$
+        \item
+            Use $M \bZ$ to test $H_{M}:\mytr (M\Xi C)=0$ against $K_M:\mytr (M\Xi C)>0$.
+            $$
+            H=\bigcap_M H_M\quad \text{and}\quad K=\bigcup_M K_M
+            $$
+        \item
+            Note that, $\mytr(M\bZ J C)$, the UMVUE of $\mytr(M\Xi C)$, is distributed as $N(\mytr(M\Xi C),\mytr(M\Sigma M^T))$. Consider $t$-type test statistic
+            $$
+            T_M=\frac{\mytr(M\bZ JC)}{\sqrt{\mytr(MG M^T)}}.
+            $$
+        \item
+            By Cauchy inequality, $\max_M T_M=\mytr^{1/2}(FG^{-1})$.
+    \end{itemize}
+
+\end{frame}
+\begin{frame}{\cite{Cai2014High}'s test}
+    The test statistic $T_{CX}$ proposed by~\cite{Cai2014High} can also be derived by union intersection principle.
+    \begin{itemize}
+        \item
+            $
+            \bZ \Longleftrightarrow \big\{ e_i^T\Omega \bZ\,|\, e_i\text{ is the standard basis of $\mathbb{R}^p$},i=1,\ldots,p\big\}
+            $
+        \item
+            Use $e_i^T  \Omega \bZ$ to test 
+            $$H_i: \mytr (e_i^T \Omega \Xi C)=O_{1\times (k-1)} \text{ v.s. } K_i: \mytr (e_i^T \Omega \Xi C)\neq O_{1\times (k-1)}$$
+            $$
+            H=\bigcap_{i=1}^n H_i\quad\text{and}\quad K=\bigcup_{i=1}^n K_i
+            $$
+        \item
+            $$
+            T_i=\sum_{1\leq j<l\leq k}\frac{n_j n_l}{n_j+n_l}\frac{\big(e_i^T \Omega (\bar{\bX}_i-\bar{\bX}_j)\big)^2}{\omega_{ii}},\text{ which is not the LRT.}
+            $$
+        \item
+            $T_{CX}=\max_{1\leq i\leq p} T_i$
+    \end{itemize}
+\end{frame}
+\section{Generalized likelihood ratio test}
+\begin{frame}{Generalized likelihood ratio test}
+    \begin{itemize}
+        \item
+ Proposed by~\cite{Zhao2016A}.
+        \item
+            From simulation results, they found their test is very powerful when \textbf{variables are correlated}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Generalized likelihood ratio test}
+    \begin{itemize}
+        \item
+        In the derivation of Roy's maximum root, we have
+$$
+        \text{LRT}_a=\Big(1+\frac{a^T F a}{a^T G a}\Big)^{n/2}
+$$
+        \item
+    When $p> n-k$, $G$ is not invertible. With probability $1$, we have
+            $$
+            \sup\limits_{a^T a=1} \text{LRT}_a=+\infty.
+            $$
+    \end{itemize}
+\end{frame}
+%\begin{frame}{Generalized likelihood ratio test}
+    %\begin{itemize}
+        %\item 
+            %%By union intersection principle, we would like to find the largest $\text{LRT}_a$.
+            %We only need to consider
+            %$$\{a\,|\, \text{LRT}_a=+\infty\}.$$
+        %\item
+            %Two tasks:
+        %\begin{enumerate}[(a)]
+        %\item
+            %Choose one $a^*$ from $\{a\,|\, \text{LRT}_a=+\infty\}$ which is a $p-n+k$ dimensional linear space.
+                %%In fact, we have
+            %%$$
+                %%\{a\,|\, a^T G a=0\}=\{a\,|\, \text{LRT}_a=+\infty\} \text{ with probability $1$}.
+            %%$$
+        %\item
+            %Since $\text{LRT}_{a^*}=+\infty$, test statistic needs to be modified.
+        %\end{enumerate}
+    %\end{itemize}
+%\end{frame}
+
+\begin{frame}{Generalized likelihood ratio test}
+$$
+        \text{LRT}_a=\Big(1+\frac{a^T F a}{a^T G a}\Big)^{n/2}
+            $$
+    \begin{enumerate}[(a)]
+        \item
+             With probability $1$, $\{a \,|\, a^T G a=0\}= \{a\,|\, \text{LRT}_a=+\infty\}$.
+        \item
+            Formally, 
+            $$
+            \begin{aligned}
+            a^*=&\argmax_{a^T a=1, \text{LRT}_a=+\infty} \text{LRT}_a=\argmax_{a^T a=1, a^T G a=0}\Big(1+\frac{a^T F a}{0}\Big)^{n/2}\\
+            {=}&\argmax_{a^T a=1,a^T G a=0} a^T F a.
+            \end{aligned}
+            $$
+             %Hopefully, $a^*$ makes the largest discrepancy between $a^T F a$ and $a^T G a$.
+            %Since we only consider $\{a \,|\, a^T G a=0\}$, define
+            %$$a^*\stackrel{def}{=}\argmax_{a^T a=1,a^T G a=0} a^T F a.$$
+         \item
+             It's natural to define the generalized likelihood ration test statistic as
+             $$
+            T(Z) \stackrel{def}{=}\min_{a^T a=1,a^T G a=0} a^T F a.
+             $$
+
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{The explicit form of $T(Z)$}
+    \begin{itemize}
+        \item
+    $\tilde{J}$: $n\times (n-k)$ orthogonal matrix s.t. $\tilde{J}\tilde{J}^T=I-JJ^T$.
+\item
+            Let $Z \tilde{J}=U_{Z\tilde{J}}D_{Z\tilde{J}}V_{Z\tilde{J}}^T$ be the SVD of $Z \tilde{J}$ and  define $H_{Z\tilde{J}}=U_{Z\tilde{J}}U_{Z\tilde{J}}^T$.
+        \item
+            Two forms of $T(Z)$:
+$$
+            \begin{aligned}
+            T(Z)&=\lambda_{\max} \big(C^T J^T Z^T (I_p- H_{Z\tilde{J}})ZJC\big).\\
+            T(Z)&=\lambda_{\max}\Big(C^T\big(J^T (Z^T Z)^{-1}J\big)^{-1}C\Big).
+    \end{aligned}
+    $$
+\item
+    The first form for theoretical analysis, the second form for algorithm.
+    \end{itemize}
+\end{frame}
+\section{permutation method}
+\begin{frame}{Permutation method}
+    We use permutation method to determine the critical value.
+    \begin{itemize}
+        \item
+            Permutation test is \textcolor{red}{exact}. See, e.g.,~\cite{Lehmann}.
+        \item
+        The major down-side is its computational intensity.
+        \item
+            For the current context, we propose a fast algorithm.
+    \end{itemize}
+\end{frame}
+\begin{frame}{Permutation method}
+    \begin{itemize}
+        \item
+            \begin{equation}\label{statisticForm2}
+            T(Z)=\lambda_{\max}\Big(C^T\big(J^T (Z^T Z)^{-1}J\big)^{-1}C\Big).
+            \end{equation}
+        \item
+            A permuted statistic can be written as
+            \begin{equation}\label{permutedStatistic}
+            T(Z\Gamma)=\lambda_{\max}\Big(C^T\big(J^T \Gamma^T (Z^T Z)^{-1} \Gamma J\big)^{-1}C\Big).
+            \end{equation}
+        \item
+           the most time-consuming component is $(Z^T Z)^{-1}$ which can be calculated aforehand.
+    \end{itemize}
+\end{frame}
+\begin{frame}{Permutation method}
+    \begin{enumerate}[(I)]
+
+\item Calculate $T(Z)$ according to~\eqref{statisticForm2}, hold intermediate result ${(Z^T Z)}^{-1}$.
+\item For a large $M$, independently generate $M$ random permutation matrix $\Gamma_1,\ldots,\Gamma_M$ and calculate $T(Z\Gamma_1),\ldots,T(Z\Gamma_M)$ according to~\eqref{permutedStatistic}. 
+\item Calculate the $p$-value by
+$$
+\tilde{p}={(M+1)}^{-1}\big[1+\sum_{i=1}^M I\{T(Z\Gamma_i)\geq T(Z)\}\big].
+$$
+Reject the null hypothesis if $\tilde{p}\leq \alpha$.
+    \end{enumerate}
+\end{frame}
+\begin{frame}{Permutation method}
+    \begin{itemize}
+        \item
+            For any integer $M>0$, the resulting test controls the Type I error. More precisely, we have 
+            $$\Pr(\tilde{p}\leq u)\leq u$$
+            for all $0\leq u \leq 1$.
+        \item
+            As $M$ tends to $\infty$, $\lim_{M\to\infty}\Pr(\tilde{p}\leq u)=u$.
+    \end{itemize}
+    See, for example,~\cite{Lehmann}, Chapter 15.
+\end{frame}
+\begin{frame}{Time complexity}
+                    $(Z^T Z)^{-1}$: multiplication is $O(n^2 p)$, taking inverse is $O(n^2 p+n^3)$.
+    \begin{itemize}
+        \item
+            Step (I): $O(n^2 p+n^3)$.
+        \item
+            Step (II): $O(Mn^2)$.
+        \item
+            Step (III): $O(M)$.
+    \end{itemize}
+            
+            \begin{itemize}
+        \item
+            The time complexity of step (II) is negligible when $n+p$ is large.
+        \item
+            In fact, permutation method is more efficient than asymptotic method
+                    since  \textcolor{red}{we don't need to estimate the nuisance parameters}.
+            \end{itemize}
+\end{frame}
+\section{Theory}
+
+\begin{frame}{Theory}
+\begin{itemize}
+    \item
+Assume $p/n\to \infty$.
+    \item
+        The aysmptotic distribution of $T(Z)$ relies on the covariance structure.
+    \item
+        Two different covariance structures.
+        \begin{itemize}
+            \item
+                non-spiked covariance
+            \item
+                spiked covariance
+        \end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}{Non-spiked covariance}
+
+\begin{itemize}
+%\item
+%Here, non-spiked covariance means the eigenvalues of $\Sigma$ are bounded.
+\item
+Let $W_{k-1}$ be a $(k-1)\times (k-1)$ symmetric random matrix whose entries above the main diagonal are i.i.d.\ $N(0,1)$ and the entries on the diagonal are i.i.d. $N(0,2)$.
+\end{itemize}
+\end{frame}
+\begin{frame}{Non-spiked covariance}
+    \begin{theorem}\label{theorem1}
+        Suppose $p/n\to \infty$, $\Sigma$ satisfies $c\leq \lambda_p(\Sigma)\leq \cdots \leq \lambda_1(\Sigma)\leq C$ and
+        $$
+        \mytr\Big(\Sigma-\tfrac{\mytr \Sigma}{p} I_p\Big)^2 =o\big(\frac{p}{n}\big).
+        $$
+        Under local alternative
+        $
+        p^{-1}\|\Xi C\|_F^2\to 0
+        $,
+        we have
+        %\begin{align*}
+            %{\Big(2\mytr (\Sigma^2)\Big)}^{-1/2}\Big(&C^TJ^T Z^T(I_p-H_{Z\tilde J}) ZJC\\
+            %&- \frac{p-n+k}{p}\mytr(\Sigma)I_{k-1}-C^T \Xi^T (I_p-H_{Z\tilde{J}})\Xi C\Big)
+            %\xrightarrow{\mathcal{L}}W_{k-1}.
+        %\end{align*}
+        \begin{align*}
+            &\frac{T(Z)-\tfrac{p-n+k}{p}\mytr(\Sigma)}{\sqrt{\mytr(\Sigma^2)}}
+            \\
+            \sim
+            &
+            \lambda_{\max}\Big( W_{k-1}+ \frac{1}{\sqrt{\mytr(\Sigma^2)}} C^T \Xi^T (I_p-H_{Z\tilde{J}})\Xi C\Big)
+            +o_P(1),
+        \end{align*}
+where $W_{k-1}$ be a $(k-1)\times (k-1)$ symmetric random matrix whose entries above the main diagonal are i.i.d.\ $N(0,1)$ and the entries on the diagonal are i.i.d. $N(0,2)$.
+    \end{theorem}
+\end{frame}
+\begin{frame}{Non-spiked covariance}
+    \begin{itemize}
+        \item
+            If $\sqrt{n_i}\mu_i$ is from prior distribution $N_p(0,\psi I_p)$, $i=1,\ldots,k$, then
+            $$
+            \begin{aligned}
+                \psi^{-1}  C^T \Xi^T\Xi C&\sim  \text{Wishart}_{k-1}(p,I_{k-1}),\\
+                \psi^{-1}  C^T \Xi^T (I_p-H_{Z\tilde{J}})\Xi C&\sim  \text{Wishart}_{k-1}(p-n+k,I_{k-1}).
+            \end{aligned}
+            $$
+        \item
+            In this case, 
+            $$ C^T \Xi^T (I_p-H_{Z\tilde{J}})\Xi C\asymp\tfrac{p-n+k}{p}C^T \Xi^T\Xi C\asymp C^T \Xi^T\Xi C.$$
+             When $k=2$, the power function is the same as that of~\cite{Chen2010A}.
+        %\item
+            %Roughly speaking, the test has non-trivial power if
+            %$$
+            %C^T \Xi^T\Xi C \gtrsim \sqrt{\mytr(\Sigma^2)}.
+            %$$
+        \item
+            The new test does \textbf{not} have outstanding performance under non-spiked covariance.
+
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Spiked covariance}
+    \begin{itemize}
+        \item
+    The correlations between variables are mainly due to a few latent factors.
+        \item
+    A few eigenvalues of $\Sigma$ are significantly larger than the others.
+        \item
+            Spiked covariance is often assumed in PCA study and factor analysis.
+    \end{itemize}
+\end{frame}
+\begin{frame}{Spiked covariance}
+    \begin{itemize}
+        \item
+    In PCA study, people consider the estimation of principal space which also play an important role in our statistic.
+\item
+    Two approach for PCA theory: \textbf{dual covariance} method and $\sin\Theta$ theorem method.
+    \end{itemize}
+
+\end{frame}
+\begin{frame}{$\sin \Theta$ theorem approach}
+    \begin{itemize}
+        \item
+Based on matrix perturbation theory. Give perturbation bound for eigenspace.
+        \item
+    This method is flexible and can be used to investigate estimators other than classical PCA.\
+\item
+    However, it can only be used to prove consistency and can \textbf{not} be used to derive the asymptotic distribution of eigenspace.
+    \end{itemize}
+    Some papers in this approach:
+\cite{Nadler2009Finite},~\cite{Ma_2013},~\cite{Cai2012Sparse},~\cite{Vu2013}
+\end{frame}
+
+\begin{frame}{Dual covariance approach}
+    \begin{itemize}
+        \item
+Dual covariance is a simple yet powerful trick which can be used to study the sample principal space.
+        \item
+            Advantages:
+            \begin{itemize}
+            \item
+                simple.
+            \item
+            The asymptotic distribution of eigespace can be given. See~\cite{Fan2015Asymptotics}.
+            \end{itemize}
+        \item
+            Disadvantages:
+            \begin{itemize}
+                \item
+                    It can not be used to study other estimators.
+                \item
+                    It can not be used in low dimension case.
+            \end{itemize}
+    \end{itemize}
+    Some papers in this approach:
+\cite{Jung2009PCA},~\cite{Shen2013Consistency},~\cite{Fan2015Asymptotics}.
+\end{frame}
+\begin{frame}{Consistency of principal space}
+
+    \begin{assumption}
+        Let $r$ be a fixed integer. Suppose $\lambda_r n/p\to \infty$ and $C\geq \lambda_{r+1}\geq \cdots \geq \lambda_p\geq c$, where $c$ and $C$ are absolute constant.
+    \end{assumption}
+    \begin{itemize}
+        \item
+   Eigen decomposition of $\Sigma$: $\Sigma=U\Lambda U^T$.
+            \item
+                Let $U_1$ and $U_2$ be the first $r$ and last $p-r$ columns of $U$. Define $\Lambda_1=\mydiag(\lambda_1,\ldots,\lambda_r)$ and $\Lambda_2=\mydiag(\lambda_{r+1},\ldots,\lambda_p)$.
+            \item
+    
+    Note that $\Sigma= U_1\Lambda_1 U_1^T +U_2\Lambda_2 U_2^T$.
+\item
+    $U_1 U_1^T$ is the principal space.
+    \end{itemize}
+
+
+\end{frame}
+
+\begin{frame}{Consistency of principal space}
+\begin{itemize}
+    \item
+        Recall taht  $Z\tilde{J}=U_{Z\tilde{J}}D_{Z\tilde{J}}V_{Z\tilde{J}}^T$ is the SVD of $Z\tilde{J}$. And $H_{Z\tilde{J}}=U_{Z\tilde{J}}U_{Z\tilde{J}}^T$.
+    \item
+        Note that $H_{Z\tilde{J}}\geq U_{Z\tilde{J}[,1:r]}U_{Z\tilde{J}[,1:r]}^T$.
+    \item
+    We study the consistent rate of
+        $U_{Z\tilde{J}[,1:r]}U_{Z\tilde{J}[,1:r]}^T$ as an estimator of $U_1 U_1^T$.
+    %\item
+    %Compared to existing consistency results need further assumptions on $\lambda_1,\ldots,\lambda_r$. We prove the following lemma by dual covariance method.
+\end{itemize}
+    \begin{lemma}
+        Under the spiked covariance assumption and $p/n\to \infty$, we have
+        $$\lambda_{\max}(I_r- U_1^T U_{Z\tilde{J}[,1:r]})=O_P(\frac{p}{\lambda_r n}).$$
+    \end{lemma}
+
+\end{frame}
+\begin{frame}{Asymptotic distribution under spiked covariance}
+    \begin{theorem}
+
+Suppose the spiked covariance assumption holds, $p/n\to \infty$,
+        \textcolor{red}{$\frac{\lambda_1^2 p}{\lambda_r^2 n^2}\to 0$} and
+$
+\mytr\Big(\Lambda_2-\frac{1}{p-r}(\mytr \Lambda_2)I_{p-r}\Big)^2=o\big(\frac{p}{n}\big)
+$.
+Then under local alternative
+\begin{equation*}
+\frac{1}{\sqrt{p}}\|\Xi C\|_F^2=O(1),
+\end{equation*}
+we have
+$$
+\begin{aligned}
+    &\frac{T(Z)-\frac{p-r-n+k}{p-r}\mytr(\Lambda_2)}{\sqrt{2\mytr (\Lambda_2^2)}}\\
+    \sim&
+\lambda_{\max}\Big(W_{k-1}+{\big(2\mytr (\Lambda_2^2)\big)}^{-1/2} C^T \Xi^T (I_p-H_{Z\tilde{J}})\Xi C\Big)
++o_P(1).
+\end{aligned}
+$$
+    \end{theorem}
+\end{frame}
+
+\begin{frame}{Asymptotic distribution under spiked covariance}
+    \begin{itemize}
+        \item
+            We require the condition $\frac{\lambda_1^2 p}{\lambda_r^2 n^2}\to 0$
+             since, like PCA theory, there is a \textcolor{red}{phase transition} phenomenon.
+            %We need this condition since the PCA consistency requires $p$ not to be too large.
+        %\item
+    %The test  has nontrivial power if
+            %$
+%{\big(2\mytr (\Lambda_2^2)\big)}^{-1/2} C^T \Xi^T (I_p-H_{Z\tilde{J}})\Xi C
+            %$ does not tend to $0$.
+        \item
+            Note that the asymptotic distribution \textbf{does not} depend on $\lambda_1,\ldots,\lambda_r$.
+        \item
+            Other test procedures are negatively affected by $\lambda_1,\ldots,\lambda_r$.
+         \item
+             Thus, the new test procedure has particular good behavior when $\lambda_1,\ldots,\lambda_r$ are large.
+    \end{itemize}
+\end{frame}
+\section{Simulation results}
+\begin{frame}
+
+\begin{table}[!hbp]\scriptsize
+    \caption{Empirical powers of tests under non-sparse alternative with $\alpha=0.05$, $k=3$, $n_1=n_2=n_3=25$. $\Sigma=\mydiag(p,1,\ldots,1)$. Based on $1000$ replications.}
+\centering
+\begin{tabular}{*{10}{c}}
+\toprule
+\multirow{2}{*}{SNR} &\multicolumn{3}{c}{$p=100$}&\multicolumn{3}{c}{$p=150$}&\multicolumn{3}{c}{$p=200$} \\
+    \cmidrule(r){2-4}\cmidrule(r){5-7}\cmidrule(r){8-10}
+        & CX & SC & NEW & CX &SC &NEW &CX & SC & NEW\\
+\midrule
+0 & 0.050 & 0.043 & 0.050 & 0.056 & 0.066 & 0.048 & 0.062 & 0.045 & 0.054 \\ 
+1 & 0.069 & 0.048 & 0.063 & 0.046 & 0.052 & 0.091 & 0.068 & 0.048 & 0.095 \\ 
+2 & 0.097 & 0.046 & 0.131 & 0.086 & 0.053 & 0.164 & 0.068 & 0.057 & 0.173 \\ 
+3 & 0.113 & 0.061 & 0.200 & 0.117 & 0.057 & 0.270 & 0.101 & 0.045 & 0.313 \\ 
+4 & 0.135 & 0.053 & 0.247 & 0.130 & 0.054 & 0.402 & 0.118 & 0.066 & 0.485 \\ 
+5 & 0.158 & 0.065 & 0.357 & 0.134 & 0.066 & 0.526 & 0.134 & 0.073 & 0.616 \\ 
+6 & 0.198 & 0.081 & 0.433 & 0.161 & 0.052 & 0.668 & 0.138 & 0.067 & 0.765 \\ 
+7 & 0.217 & 0.068 & 0.514 & 0.191 & 0.067 & 0.759 & 0.174 & 0.068 & 0.862 \\ 
+8 & 0.229 & 0.063 & 0.582 & 0.223 & 0.075 & 0.853 & 0.187 & 0.060 & 0.927 \\ 
+9 & 0.264 & 0.094 & 0.680 & 0.218 & 0.080 & 0.918 & 0.227 & 0.067 & 0.966 \\ 
+10 & 0.298 & 0.091 & 0.758 & 0.245 & 0.076 & 0.934 & 0.228 & 0.052 & 0.982 \\ 
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{frame}
+
+\begin{frame}
+\begin{table}[!hbp]\scriptsize
+    \caption{Empirical powers of tests under sparse alternative with $\alpha=0.05$, $k=3$, $n_1=n_2=n_3=25$. $\Sigma=\mydiag(p,1,\ldots,1)$. Based on $1000$ replications.}
+    \centering
+\begin{tabular}{*{10}{c}}
+\toprule
+\multirow{2}{*}{SNR} &\multicolumn{3}{c}{$p=100$}&\multicolumn{3}{c}{$p=150$}&\multicolumn{3}{c}{$p=200$} \\
+    \cmidrule(r){2-4}\cmidrule(r){5-7}\cmidrule(r){8-10}
+        & CX & SC & NEW & CX &SC &NEW &CX & SC & NEW\\
+\midrule
+0 & 0.048 & 0.045 & 0.046 & 0.053 & 0.046 & 0.043 & 0.051 & 0.034 & 0.046 \\ 
+1 & 0.079 & 0.055 & 0.082 & 0.066 & 0.063 & 0.079 & 0.063 & 0.059 & 0.100 \\ 
+2 & 0.097 & 0.054 & 0.119 & 0.088 & 0.055 & 0.138 & 0.085 & 0.055 & 0.160 \\ 
+3 & 0.133 & 0.069 & 0.167 & 0.113 & 0.066 & 0.223 & 0.114 & 0.054 & 0.235 \\ 
+4 & 0.149 & 0.062 & 0.212 & 0.126 & 0.084 & 0.298 & 0.132 & 0.057 & 0.344 \\ 
+5 & 0.204 & 0.060 & 0.281 & 0.169 & 0.066 & 0.427 & 0.154 & 0.057 & 0.469 \\ 
+6 & 0.252 & 0.060 & 0.352 & 0.227 & 0.070 & 0.548 & 0.195 & 0.072 & 0.641 \\ 
+7 & 0.310 & 0.072 & 0.429 & 0.252 & 0.059 & 0.614 & 0.220 & 0.061 & 0.711 \\ 
+8 & 0.372 & 0.088 & 0.529 & 0.314 & 0.085 & 0.719 & 0.297 & 0.060 & 0.800 \\ 
+9 & 0.427 & 0.083 & 0.547 & 0.362 & 0.085 & 0.794 & 0.300 & 0.057 & 0.881 \\ 
+10 & 0.449 & 0.093 & 0.619 & 0.396 & 0.072 & 0.853 & 0.340 & 0.076 & 0.911 \\ 
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{frame}
+
+\begin{frame}
+\begin{table}[!hbp]\scriptsize
+    \caption{Empirical powers of tests under sparse alternative with $\alpha=0.05$, $k=3$, $n_1=n_2=n_3=25$. The diagonal elements of $\Sigma$ are generated from sort(Unif(1,100)). Based on $1000$ replications.}
+    \centering
+\begin{tabular}{*{10}{c}}
+\toprule
+\multirow{2}{*}{SNR} &\multicolumn{3}{c}{$p=100$}&\multicolumn{3}{c}{$p=150$}&\multicolumn{3}{c}{$p=200$} \\
+    \cmidrule(r){2-4}\cmidrule(r){5-7}\cmidrule(r){8-10}
+        & CX & SC & NEW & CX &SC &NEW &CX & SC & NEW\\
+\midrule
+0 & 0.052 & 0.055 & 0.047 & 0.055 & 0.057 & 0.053 & 0.044 & 0.055 & 0.057 \\ 
+1 & 0.068 & 0.124 & 0.065 & 0.070 & 0.130 & 0.085 & 0.049 & 0.116 & 0.087 \\ 
+2 & 0.085 & 0.233 & 0.112 & 0.076 & 0.239 & 0.149 & 0.067 & 0.241 & 0.161 \\ 
+3 & 0.110 & 0.388 & 0.161 & 0.090 & 0.408 & 0.215 & 0.097 & 0.417 & 0.227 \\ 
+4 & 0.120 & 0.530 & 0.184 & 0.112 & 0.552 & 0.282 & 0.103 & 0.556 & 0.309 \\ 
+5 & 0.167 & 0.708 & 0.238 & 0.142 & 0.699 & 0.387 & 0.140 & 0.687 & 0.394 \\ 
+6 & 0.196 & 0.807 & 0.261 & 0.168 & 0.820 & 0.472 & 0.162 & 0.823 & 0.547 \\ 
+7 & 0.217 & 0.875 & 0.318 & 0.177 & 0.892 & 0.505 & 0.173 & 0.896 & 0.646 \\ 
+8 & 0.234 & 0.935 & 0.378 & 0.220 & 0.951 & 0.625 & 0.195 & 0.948 & 0.749 \\ 
+9 & 0.312 & 0.965 & 0.407 & 0.222 & 0.970 & 0.672 & 0.224 & 0.979 & 0.809 \\ 
+10 & 0.334 & 0.976 & 0.505 & 0.292 & 0.987 & 0.773 & 0.254 & 0.989 & 0.881 \\ 
+\bottomrule
+\end{tabular}
+\end{table}
+\end{frame}
+
+
+\begin{frame}{Conclusion remarks}
+    %Roy's union intersection principle
+    %\begin{enumerate}
+        %\item
+            %Decompose the hypothesis.
+        %\item
+            %Construct component tests $T_\gamma$.
+        %\item
+            %Global test statistic: $\max_{\gamma}T_{\gamma}$.
+    %\end{enumerate}
+
+    \begin{enumerate}
+    \item
+        Transform high dimensional data into a set of univariate data indexed by $\gamma$.
+    \item
+        Construct component tests $T_{\gamma}$. Treat $T_{\gamma}$ as a function of $\gamma$.
+    \item
+        Find a summary of $T_{\gamma}$. Multiple choices:
+            \begin{itemize}
+                \item
+                    Methodology in this paper.
+                \item
+                    Integrate out $\gamma$, which is equivalent to random projection based test. See, for example,~\cite{Thulin2014A}.
+                \item
+                    HC.\
+                \item
+                    \ldots
+            \end{itemize}
+    \end{enumerate}
+
+\end{frame}
+
+
+\begin{frame}{Conclusion remark}
+    \begin{itemize}
+        \item
+            Based on Roy's union intersection principle, a generalized likelihood ratio test is proposed.
+            The asymptotic distribution are derived under both spiked and non-spiked covariance.
+            The new test has particular good power under spiked covariance.
+        \item
+            More results, ongoing and future work
+            \begin{enumerate}
+            \item
+                Inference problem under spiked covariance model.
+            \item
+                Permutation method or more general, randomization method, in high dimensions.
+            \item
+                Apply generalized likelihood ratio test methodology to other testing problem.
+            \end{enumerate}
+    \end{itemize}
+\end{frame}
+\begin{frame}
+    \begin{center}\huge
+    Thanks!\end{center}
+\end{frame}
+\bibliography{mybibfile}
+
+
+\end{document}
